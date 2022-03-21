@@ -23,11 +23,13 @@ Edges have weights indicating their capacity, or how much flow can be carried fr
 node to another. In addition to capacities, edges can also have costs, and a network
 flow problem often involves calculating what the maximum amount of flow that can be
 carried from the source node to the sink node is while using the minimum cost.
+
 Many problems can be reduced to a network flow problem. One popular problem
 is bipartite matching, which is itself very applicable to scenarios like matching up
 applicants and positions, customers and suppliers, etc. It can also be easily translated
 into a network flow problem by adding dummy source and sink nodes and adjusting the
 capacities.
+
 There are several different algorithms for solving the maximum flow problem.
 Perhaps the most basic is Ford-Fulkerson, which pushes the maximum flow along the
 graph while it is possible to do so. The algorithm employs the concept of a residual
@@ -37,11 +39,10 @@ edge with initial capacity c, its residual capacity in the residual graph would 
 Ford-Fulkerson has a sequential runtime of O(mF), where F is the value of the
 maximum flow and m is the number of edges in the graph. With larger graph inputs, F
 could be a very large value, making Ford-Fulkerson pretty inefficient.
+
 A more intuitive algorithm is Edmonds-Karp, which picks the path in the current
 graph of the largest capacity and pushes that much flow through the graph. This
-algorithm has a sequential runtime of O(m^2 logF). While this reduces the dependence
-
-
+algorithm has a sequential runtime of O(m^2 logF). While this reduces the dependence 
 of the algorithm on F from being in poly-time to logarithmic, note that Edmonds-Karp is
 not parallelizable between iterations due to the dependence on maximum flow.
 However, we can eliminate the dependence on the maximum flow entirely with Dinic’s
@@ -60,6 +61,7 @@ perform more rounds of computations on them in subsequent iterations. As we work
 our project, we’ll need to figure out exactly what parts of the algorithms can be safely
 and correctly parallelized. We’ll also need to figure out how to synchronize between
 iterations and what data should be shared.
+
 Additionally, there could be many dependencies between nodes in the graph,
 which would make it difficult to figure out how to partition the total work or graph
 computation among all threads. Additionally, to improve performance, we would like to
