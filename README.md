@@ -3,7 +3,7 @@
 ```
 Michelle Ling, Michelle Zhang
 ```
-**SUMMARY**
+## SUMMARY
 
 For our project, we intend to write parallel versions of common sequential network flow
 algorithms, including Dinic’s Algorithm and the Ford-Fulkerson Algorithm. These
@@ -13,7 +13,7 @@ parallelism. To evaluate the performance of our algorithms, we will run our para
 algorithms on various types of graphs and calculate the speedup with respect to the
 sequential implementations.
 
-**BACKGROUND**
+## BACKGROUND
 
 Network flows can be used to model a variety of graph problems and are used
 heavily in operations research and related fields. Max flow has many applications,
@@ -52,7 +52,7 @@ subroutine, which offers a lot of room for parallelization. We can also test dif
 representations (e.g. adjacency list, adjacency matrix) and examine how the data
 structure impacts the speedup as well.
 
-**CHALLENGES**
+## CHALLENGES
 
 As the most common network flow algorithms are inherently sequential or
 iterative by nature, there are many challenges that come with implementing parallel
@@ -74,17 +74,20 @@ and improve locality, which present additional challenges.
 **Code-related:**
 
 - Our sequential approaches will be inspired by either pseudocode (Dinic’s) or
-    high-level descriptions (Ford-Fulkerson, Edmond-Karp) of the algorithm from the
+    high-level descriptions (Ford-Fulkerson, Edmonds-Karp) of the algorithm from the
     15-451 lecture notes.
+    
        - https://www.cs.cmu.edu/~15451-s22/lectures/lec10-flow1.pdf
+       
        - https://www.cs.cmu.edu/~15451-s22/lectures/lec11-flow2.pdf
+       
 - Our parallel approaches will be inspired by papers on previous efforts to
     parallelize the algorithms. They generally include high-level descriptions of their
     approaches and possibly some pseudocode as well.
-       - https://pdfs.semanticscholar.org/c4fb/713ed6b41672dc51782513062cd
-          0d979c3.pdf(Edmond-Karp)
-       - [http://worldcomp-proceedings.com/proc/p2013/PDP3767.pdf](http://worldcomp-proceedings.com/proc/p2013/PDP3767.pdf)
-          (Ford-Fulkerson)
+    
+       - https://pdfs.semanticscholar.org/c4fb/713ed6b41672dc51782513062cd470d979c3.pdf (Edmonds-Karp)
+       
+       - http://worldcomp-proceedings.com/proc/p2013/PDP3767.pdf (Ford-Fulkerson)
 
 
 **Hardware-related:**
@@ -100,26 +103,34 @@ and improve locality, which present additional challenges.
 **Other:**
 
 - We will need input graphs of different sizes to test our approaches on, so we will
-    either find suitable data sets online (e.g.https://snap.stanford.edu/data/)and
+    either find suitable data sets online (e.g. https://snap.stanford.edu/data/) and
     convert them to the desired input formats, or create our own input data.
 
-**GOALS AND DELIVERABLES**
+## GOALS AND DELIVERABLES
 
-**75%:** The bare minimum we’d like to complete is implementingparallel versions of
+**75%:** 
+
+The bare minimum we’d like to complete is implementing parallel versions of
 Dinic’s Algorithm and the Ford-Fulkerson Algorithm.
 
-**100%:** If everything goes according to plan, we willimplement parallel versions of
+**100%:** 
+
+If everything goes according to plan, we will implement parallel versions of
 Dinic’s Algorithm, the Ford-Fulkerson Algorithm, and the Edmonds-Karp Algorithm.
 
-**125%:** If we have extra time, we will try to implementa parallel version of the
+**125%:** 
+
+If we have extra time, we will try to implement a parallel version of the
 Push-Relabel Algorithm. We can also try optimizing our parallel versions, for example
 by creating lock-free implementations, or perhaps further improving locality by
 examining our cache performance.
 
-Our overall goal is toachieve significant speedup(especially on larger input graphs)
+Our overall goal is to achieve significant speedup (especially on larger input graphs)
 over the sequential versions of these algorithms.
 
-**Deliverables:** After running tests on various typesof input graphs, we’ll create
+**Deliverables:** 
+
+After running tests on various typesof input graphs, we’ll create
 charts/graphs showing the speedup of our parallel algorithms with respect to the
 sequential versions. We will also discuss practical use cases of these parallel algorithms
 and what advantages each of them might have over the others (i.e. when to use which
@@ -128,28 +139,32 @@ highlight the differences between the algorithms and analyze the parallelizabili
 one, and hypothesize why some may be easier to parallelize than others. If we have
 time, it might be instructive to create a visual demo of one of our algorithms at work.
 
-**SCHEDULE**
-
+# SCHEDULE
 
 **Week 1 (March 27 - April 2)**
-● Sequential Ford-Fulkerson implementation
-● Parallelize Ford-Fulkerson with OpenMP and MPI
+- Sequential Ford-Fulkerson implementation
+- Parallelize Ford-Fulkerson with OpenMP and MPI
+ 
 **Week 2 (April 3 - April 9)**
-● Run tests and compare parallel Ford-Fulkerson approaches
-● Sequential Dinic’s implementation
+- Run tests and compare parallel Ford-Fulkerson approaches
+- Sequential Dinic’s implementation
+
 **Week 3 (April 10 - 16)**
-● Parallelize Dinic’s with OpenMP and MPI
-● Run tests and compare parallel Dinic’s approaches
+- Parallelize Dinic’s with OpenMP and MPI
+- Run tests and compare parallel Dinic’s approaches
+
 **Week 4 (April 17 - April 23)**
-● Sequential Edmonds-Karp implementation
-● Parallelize Edmonds-Karp with OpenMP and MPI
-● Run tests and compare parallel Edmonds-Karp approaches
+- Sequential Edmonds-Karp implementation
+- Parallelize Edmonds-Karp with OpenMP and MPI
+- Run tests and compare parallel Edmonds-Karp approaches
+
 **Week 5 (April 24 - April 29)**
-● Run tests on all three algorithms and compare efficiency of approaches on
+- Run tests on all three algorithms and compare efficiency of approaches on
 different types of inputs
-● Complete report
-● (Work on optional algorithms if time permits)
+- Complete report
+- (Work on optional algorithms if time permits)
+
 **Week 6 (April 30 - May 5)**
-● Prepare for presentation
+- Prepare for presentation
 
 
