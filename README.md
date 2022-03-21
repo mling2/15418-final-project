@@ -53,6 +53,7 @@ representations (e.g. adjacency list, adjacency matrix) and examine how the data
 structure impacts the speedup as well.
 
 **CHALLENGES**
+
 As the most common network flow algorithms are inherently sequential or
 iterative by nature, there are many challenges that come with implementing parallel
 versions of them. In particular, in the sequential algorithms, we iteratively generate
