@@ -73,21 +73,17 @@ and improve locality, which present additional challenges.
 
 **Code-related:**
 
-- Our sequential approaches will be inspired by either pseudocode (Dinic’s) or
+* Our sequential approaches will be inspired by either pseudocode (Dinic’s) or
     high-level descriptions (Ford-Fulkerson, Edmonds-Karp) of the algorithm from the
     15-451 lecture notes.
-    
-       - https://www.cs.cmu.edu/~15451-s22/lectures/lec10-flow1.pdf
+    * https://www.cs.cmu.edu/~15451-s22/lectures/lec10-flow1.pdf
+    * https://www.cs.cmu.edu/~15451-s22/lectures/lec11-flow2.pdf
        
-       - https://www.cs.cmu.edu/~15451-s22/lectures/lec11-flow2.pdf
-       
-- Our parallel approaches will be inspired by papers on previous efforts to
+* Our parallel approaches will be inspired by papers on previous efforts to
     parallelize the algorithms. They generally include high-level descriptions of their
     approaches and possibly some pseudocode as well.
-    
-       - https://pdfs.semanticscholar.org/c4fb/713ed6b41672dc51782513062cd470d979c3.pdf (Edmonds-Karp)
-       
-       - http://worldcomp-proceedings.com/proc/p2013/PDP3767.pdf (Ford-Fulkerson)
+    * https://pdfs.semanticscholar.org/c4fb/713ed6b41672dc51782513062cd470d979c3.pdf (Edmonds-Karp)
+    * http://worldcomp-proceedings.com/proc/p2013/PDP3767.pdf (Ford-Fulkerson)
 
 
 **Hardware-related:**
@@ -108,19 +104,13 @@ and improve locality, which present additional challenges.
 
 ## GOALS AND DELIVERABLES
 
-**75%:** 
-
-The bare minimum we’d like to complete is implementing parallel versions of
+**75%:** The bare minimum we’d like to complete is implementing parallel versions of
 Dinic’s Algorithm and the Ford-Fulkerson Algorithm.
 
-**100%:** 
-
-If everything goes according to plan, we will implement parallel versions of
+**100%:** If everything goes according to plan, we will implement parallel versions of
 Dinic’s Algorithm, the Ford-Fulkerson Algorithm, and the Edmonds-Karp Algorithm.
 
-**125%:** 
-
-If we have extra time, we will try to implement a parallel version of the
+**125%:** If we have extra time, we will try to implement a parallel version of the
 Push-Relabel Algorithm. We can also try optimizing our parallel versions, for example
 by creating lock-free implementations, or perhaps further improving locality by
 examining our cache performance.
