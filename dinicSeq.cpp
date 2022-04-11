@@ -17,7 +17,6 @@ struct edge
 int N; // total number of vertices in graph
 int *layer;
 vector<edge> *adj;
-Timer t; 
 
 // adds an edge to the graph by inserting into adjacency list
 void createEdge(int u, int v, int cap)
@@ -124,7 +123,7 @@ int main()
     auto end = chrono::steady_clock::now();
     auto diff = end - start;
 
-    cout << "Max flow: " << flow << "\n Sequential Dinic time: " << diff;
+    cout << "Max flow: " << flow << "\n Sequential Dinic time: " << diff << "\n";
 
     return 0;
 }
