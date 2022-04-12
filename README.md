@@ -132,15 +132,15 @@ time, it might be instructive to create a visual demo of one of our algorithms a
 # SCHEDULE
 
 **Week 1 (March 27 - April 2)**
-- Sequential Ford-Fulkerson implementation
-- Parallelize Ford-Fulkerson with OpenMP and MPI
+- Sequential Ford-Fulkerson implementation (Completed by Michelle Ling)
+- Parallelize Ford-Fulkerson with OpenMP and MPI (In Progess by both)
  
 **Week 2 (April 3 - April 9)**
 - Run tests and compare parallel Ford-Fulkerson approaches
-- Sequential Dinic’s implementation
+- Sequential Dinic’s implementation (Completed by Michelle Zhang)
 
 **Week 3 (April 10 - 16)**
-- Parallelize Dinic’s with OpenMP and MPI
+- Parallelize Dinic’s with OpenMP and MPI (In progess by both)
 - Run tests and compare parallel Dinic’s approaches
 
 **Week 4 (April 17 - April 23)**
@@ -158,3 +158,14 @@ different types of inputs
 - Prepare for presentation
 
 
+## Milestone Report
+
+We have implemented the sequential version of the Ford-Fulkerson and Dinic's
+algorithms, as well as discussed approaches for parallelizing both algorithms.
+We are a bit behind, having not finished the parallel implementations yet, but 
+we estimate that we can still finish the three main algorithms by the poster
+session. We plan to do a demo to showcase the speedup on each algorithm, and 
+possibly present some graphs for the speedup on different types of inputs.
+Although we are behind the original schedule, we both expect to be able to devote
+more time to the project in the coming weeks, and catch up to the Week 3
+deliverables by the end of the week. 
