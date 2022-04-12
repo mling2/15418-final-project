@@ -1,17 +1,17 @@
-APP_NAME=ford_fulkerson
+APP_NAMES=ford_fulkerson
 
 OBJS=ford_fulkerson.o
 
 CXX = g++ -std=c++11
 CXXFLAGS = -I. -O3 -Wall
 
-default: $(APP_NAME)
+default: $(APP_NAMES)
 
-$(APP_NAME): $(OBJS)
+$(APP_NAMES): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 
 %.o: %.cpp
 	$(CXX) $< $(CXXFLAGS) -c -o $@
 
 clean:
-	/bin/rm -rf *~ *.o $(APP_NAME)
+	/bin/rm -rf *~ *.o $(APP_NAMES)
