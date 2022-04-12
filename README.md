@@ -1,4 +1,4 @@
-# Project Proposal: Parallelizing Network Flow Algorithms
+# 418 Final Project: Parallelizing Network Flow Algorithms
 
 ```
 Michelle Ling, Michelle Zhang
@@ -120,7 +120,7 @@ over the sequential versions of these algorithms.
 
 **Deliverables:** 
 
-After running tests on various typesof input graphs, we’ll create
+After running tests on various types of input graphs, we’ll create
 charts/graphs showing the speedup of our parallel algorithms with respect to the
 sequential versions. We will also discuss practical use cases of these parallel algorithms
 and what advantages each of them might have over the others (i.e. when to use which
@@ -129,18 +129,16 @@ highlight the differences between the algorithms and analyze the parallelizabili
 one, and hypothesize why some may be easier to parallelize than others. If we have
 time, it might be instructive to create a visual demo of one of our algorithms at work.
 
-# SCHEDULE
+# UPDATED SCHEDULE
 
-**Week 1 (March 27 - April 2)**
+**Week 1 & 2 (March 27 - April 9)**
 - Sequential Ford-Fulkerson implementation (Completed by Michelle Ling)
-- Parallelize Ford-Fulkerson with OpenMP and MPI (In Progess by both)
- 
-**Week 2 (April 3 - April 9)**
-- Run tests and compare parallel Ford-Fulkerson approaches
 - Sequential Dinic’s implementation (Completed by Michelle Zhang)
 
 **Week 3 (April 10 - 16)**
+- Parallelize Ford-Fulkerson with OpenMP and MPI (In Progess by both)
 - Parallelize Dinic’s with OpenMP and MPI (In progess by both)
+- Run tests and compare parallel Ford-Fulkerson approaches
 - Run tests and compare parallel Dinic’s approaches
 
 **Week 4 (April 17 - April 23)**
@@ -162,10 +160,25 @@ different types of inputs
 
 We have implemented the sequential version of the Ford-Fulkerson and Dinic's
 algorithms, as well as discussed approaches for parallelizing both algorithms.
+We have created some small test cases to test the correctness our sequential algorithms,
+but in the coming weeks we will work on creating larger and more diverse
+test graphs to test our implementations further. In addition, we need to 
+implement timing code in our sequential algorithms in order to compare performance
+times and do speedup computations when we finish our parallel implementations. As
+we currently do not have timing code implemented, we don't have preliminary results
+to report at this time.
+
 We are a bit behind, having not finished the parallel implementations yet, but 
 we estimate that we can still finish the three main algorithms by the poster
-session. We plan to do a demo to showcase the speedup on each algorithm, and 
+session. 
+
+We plan to do a demo to showcase the speedup on each algorithm, and 
 possibly present some graphs for the speedup on different types of inputs.
-Although we are behind the original schedule, we both expect to be able to devote
-more time to the project in the coming weeks, and catch up to the Week 3
-deliverables by the end of the week. 
+We also plan to discuss practical use cases of these parallel algorithms
+and what advantages each of them might have over the others (i.e. when to use which
+algorithm, depending on the characteristics of the input graph). Using our results, we’ll
+highlight the differences between the algorithms and analyze the parallelizability of each
+one, and hypothesize why some may be easier to parallelize than others.
+Although we are behind the original schedule due to schoolwork and Spring Carnival,
+we both expect to be able to devote more time to the project in the coming weeks, 
+and catch up to the Week 3 deliverables by the end of the week. 
