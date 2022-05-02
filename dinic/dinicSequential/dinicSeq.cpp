@@ -42,7 +42,6 @@ bool search(int s, int t) {
     while (!queue.empty()) {
         int parent = queue.front();
         queue.pop_front();
-        cout << "searching parent: " << parent << "\n";
         for (auto curr = adj[parent].begin(); curr != adj[parent].end(); curr++) {
             if (layer[curr->v] < 0 && curr->cap > curr->flow) {
                 layer[curr->v] = layer[parent] + 1;

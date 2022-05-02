@@ -29,8 +29,11 @@ void createEdge(int u, int v, int cap) {
     adj[v].push_back(b); 
 }
 
-/* runs BFS: for each iteration, determines if additional flow can be sent
-* from source -> sink. Also assigns levels to the vertices */
+/* Runs BFS: for each iteration, determines if additional flow can be sent
+*  from source -> sink. Also assigns levels to the vertices.
+*  This version of BFS looks at all the neighbors in parallel rather than 
+*  iterating through them sequentially.
+*/
 bool search(int s, int t) {
     #pragma parallel for private(N)
     for (int i = 0; i < N; i++) {
@@ -119,6 +122,7 @@ void printAdjList() {
 }
 
 int main(int argc, char *argv[]) {
+    omp_set_num_threads(omp_get_max_threads());
     char *input_filename = argv[1];
     FILE *input = fopen(input_filename, "r");
     if (!input) {
