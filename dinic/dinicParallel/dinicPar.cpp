@@ -3,6 +3,7 @@
 #include <iostream>
 #include <climits>
 #include <chrono>
+#include <omp.h>
 using namespace std;
 
 // struct representing an edge from u -> v
@@ -13,8 +14,8 @@ struct edge {
     unsigned long back; // index of backwards edge in adj
 };
 
-int N; // total number of vertices in graph
-int M; // total number of edges in graph
+int N = 0; // total number of vertices in graph
+int M = 0; // total number of edges in graph
 int sinkNode;
 int startNode;
 int *layer;
@@ -31,9 +32,11 @@ void createEdge(int u, int v, int cap) {
 /* runs BFS: for each iteration, determines if additional flow can be sent
 * from source -> sink. Also assigns levels to the vertices */
 bool search(int s, int t) {
+    #pragma parallel for private(N)
     for (int i = 0; i < N; i++) {
         layer[i] = -1;
     }
+    #pragma omp barrier
 
     layer[s] = 0;
     list<int> queue;
@@ -42,11 +45,20 @@ bool search(int s, int t) {
     while (!queue.empty()) {
         int parent = queue.front();
         queue.pop_front();
-        cout << "searching parent: " << parent << "\n";
-        for (auto curr = adj[parent].begin(); curr != adj[parent].end(); curr++) {
-            if (layer[curr->v] < 0 && curr->cap > curr->flow) {
-                layer[curr->v] = layer[parent] + 1;
-                queue.push_back(curr->v);
+
+        std::vector<edge> neighbors = adj[parent];
+        int currentLevel = layer[parent];
+
+        #pragma parallel
+        for (unsigned int i = 0; i < neighbors.size(); i++){
+            edge child = neighbors[i];
+        
+            if (layer[child.v] < 0  && child.cap > child.flow){
+                layer[child.v] = currentLevel + 1;
+                #pragma omp critical
+                {
+                    queue.push_back(child.v);
+                }
             }
         }
     }
@@ -57,7 +69,7 @@ bool search(int s, int t) {
 int addFlow(int u, int t, int v[], int flow) {
     if (u == t) return flow;
 
-    while (v[u] < adj[u].size()) {
+    while ((unsigned int)v[u] < adj[u].size()) {
         edge &e = adj[u][v[u]];
 
         if ((layer[e.v] == layer[u] + 1) && e.cap > e.flow ) {
@@ -79,9 +91,9 @@ int addFlow(int u, int t, int v[], int flow) {
 int maxFlow(int s, int t) {
     int totalFlow = 0;
     if (s == t) return 0;
+    int *v = new int[N + 1];
 
     while (search(s, t)) {
-        int *v = new int[N + 1];
         for (int i = 0; i < N + 1; i++) {
             v[i] = 0;
         }
@@ -117,7 +129,7 @@ int main(int argc, char *argv[]) {
     fscanf(input, "%d %d %d %d\n", &N, &M, &startNode, &sinkNode);
 
     adj = new vector<edge>[N];
-    layer = new int[N];
+    layer = (int*)calloc(N, sizeof(int));
 
     for (int i = 0; i < M; i++) {
         int u, v, cap;
@@ -127,13 +139,19 @@ int main(int argc, char *argv[]) {
 
     //printAdjList();
 
-    //auto startTime = chrono::steady_clock::now();
-    int flow = maxFlow(startNode, sinkNode);
-    //auto endTime = chrono::steady_clock::now();
-    //auto diff = endTime - startTime;
+    using namespace std::chrono;
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::duration<double> dsec;
 
-    //cout << "Max flow: " << flow << "\n Sequential Dinic time: " << diff << "\n";
-    cout << "Max flow: " << flow << "\n";
+    auto compute_start = Clock::now();
+    double compute_time = 0;
+
+    int flow = maxFlow(startNode, sinkNode);
+
+    compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
+
+    cout << "Max flow: " << flow << "\nSequential Dinic time: " << compute_time << "\n";
 
     return 0;
 }
+
