@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
 
     compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
 
-    cout << "Max flow: " << flow << "\nSequential Dinic time: " << compute_time << "\n";
+    cout << "Max flow: " << flow << "\nParallel Dinic time: " << compute_time << "\n";
 
     return 0;
 }
