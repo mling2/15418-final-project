@@ -6,17 +6,14 @@
 #include <string>
 #include <utility>
 #include <unistd.h>
-#include "ford_fulkerson.h"
 #include <queue>
 #include <map>
+#include <omp.h>
+#include <chrono>
+#include "ford_fulkerson.h"
+using namespace std;
 
-static int numNodes;
-static int numEdges;
-static int sourceNode;
-static int sinkNode;
-static node_t *nodes;
-
-bool bfs(int *parents) {
+bool bfs(int *parents, int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
     bool visited[numNodes];
     for (int i = 0; i < numNodes; i++) {
         visited[i] = false;
@@ -46,7 +43,49 @@ bool bfs(int *parents) {
     return false;
 }
 
-void print_node(int i) {
+bool bfs_omp(int *parents, int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
+
+    bool visited[numNodes];
+    
+    for (int i = 0; i < numNodes; i++) {
+        visited[i] = false;
+    }
+
+    std::queue<int> q;
+    q.push(sourceNode);
+    visited[sourceNode] = true;
+    parents[sourceNode] = -1;
+
+    while (!q.empty()) {
+        int currInd = q.front();
+        q.pop();
+        node_t currNode = nodes[currInd];
+
+        int num_of_threads = 4;
+        omp_set_num_threads(num_of_threads);
+        bool foundSink = false;
+        #pragma omp parallel for default(shared) shared(foundSink) schedule(dynamic)
+        for (int i = omp_get_thread_num(); i < currNode.numNeighbors; i += num_of_threads) {
+            printf("threads: %d\n", omp_get_num_threads());
+            int neighborInd = currNode.neighs.at(i);
+            edge_t e = currNode.neighbors[neighborInd];
+            if (visited[neighborInd] == false && e.capacity > 0) {
+                if (neighborInd == sinkNode) {
+                    parents[sinkNode] = currInd;
+                    foundSink = true;
+                }
+                q.push(neighborInd);
+                parents[neighborInd] = currInd;
+                visited[neighborInd] = true;
+            }
+        }
+        
+        if (foundSink) return true;
+    }
+    return false;
+}
+
+void print_node(int i, int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
     node_t nod = nodes[i];
     std::cout << "Node " << i << ": ";
     std::cout << "neighbors = ";
@@ -56,15 +95,15 @@ void print_node(int i) {
     std::cout << "\n";
 }
 
-void print_graph() {
+void print_graph(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
     std::cout << "PRINTING GRAPH...\n";
     for (int i = 0; i < numNodes; i++) {
-        print_node(i);
+        print_node(i, numNodes, numEdges, sourceNode, sinkNode, nodes);
     }
     std::cout << "DONE PRINTING GRAPH!\n";
 }
 
-void print_parents(int parents[]) {
+void print_parents(int parents[], int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
     std::cout << "PRINTING PARENTS...\n";
     for (int i = 0; i < numNodes; i++) {
         std::cout << "node " << i << ": parent = " << parents[i] << "\n";
@@ -72,7 +111,7 @@ void print_parents(int parents[]) {
     std::cout << "DONE PRINTING PARENTS!\n";
 }
 
-void mod_residual_graph(int flow, int parents[]) {
+void mod_residual_graph(int flow, int parents[], int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
     int curr = sinkNode;
     int parent = parents[sinkNode];
     while (curr != -1) {
@@ -84,7 +123,7 @@ void mod_residual_graph(int flow, int parents[]) {
     }
 }
 
-int get_path_flow(int parents[]) {
+int get_path_flow(int parents[], int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
     int curr = sinkNode;
     int parent = parents[sinkNode];
     int flow = nodes[parent].neighbors[curr].capacity;
@@ -98,53 +137,32 @@ int get_path_flow(int parents[]) {
     return flow;
 }
 
-int ff() {
+int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
+    printf("Sequential ff called\n");
     int parents[numNodes];
     memset(parents, -1, sizeof(parents));
     int flow = 0;
-    while (bfs(parents)) {
-        int add_flow = get_path_flow(parents);
+    while (bfs(parents, numNodes, numEdges, sourceNode, sinkNode, nodes)) {
+        printf("found more flow\n");
+        int add_flow = get_path_flow(parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
         flow += add_flow;
-        mod_residual_graph(add_flow, parents);
+        mod_residual_graph(add_flow, parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
         memset(parents, -1, sizeof(parents));
     }
     return flow;
 } 
 
-int main(int argc, char *argv[]) {
-    char *input_filename = argv[1];
-    FILE *input = fopen(input_filename, "r");
-    if (!input) {
-        printf("Unable to open file: %s.\n", input_filename);
-        return -1;
+int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
+    printf("OpenMP ff called\n");
+    int parents[numNodes];
+    memset(parents, -1, sizeof(parents));
+    int flow = 0;
+    while (bfs_omp(parents, numNodes, numEdges, sourceNode, sinkNode, nodes)) {
+        printf("found more flow\n");
+        int add_flow = get_path_flow(parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
+        flow += add_flow;
+        mod_residual_graph(add_flow, parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
+        memset(parents, -1, sizeof(parents));
     }
-    
-    fscanf(input, "%d %d %d %d\n", &numNodes, &numEdges, &sourceNode, &sinkNode);
-    int outNode, inNode, capacity;
-    nodes = (node_t*)calloc(numNodes, sizeof(node_t));
-    for (int i = 0; i < numNodes; i++) {
-        nodes[i].ind = i;
-        nodes[i].numNeighbors = 0;
-        nodes[i].neighbors = std::map<int, edge_t>();
-    }
-    for (int i = 0; i < numEdges; i++) {
-        fscanf(input, "%d %d %d\n", &outNode, &inNode, &capacity);
-        edge_t *newEdge = (edge_t*)calloc(1, sizeof(edge_t));
-        edge_t *twinEdge = (edge_t*)calloc(1, sizeof(edge_t));
-        newEdge->u = &(nodes[outNode]);
-        newEdge->v = &(nodes[inNode]);
-        newEdge->capacity = capacity;
-        newEdge->twin = twinEdge;
-        ((&(nodes[outNode]))->neighbors)[inNode] = *newEdge;
-        (&(nodes[outNode]))->numNeighbors++;
-        twinEdge->u = &(nodes[inNode]);
-        twinEdge->v = &(nodes[outNode]);
-        twinEdge->capacity = -1 * capacity;
-        twinEdge->twin = newEdge;
-        ((&(nodes[inNode]))->neighbors)[outNode] = *twinEdge;
-        (&(nodes[inNode]))->numNeighbors++;
-    }
-    int res = ff();
-    std::cout << "res = " << res << "\n";
-    return res;
-}
+    return flow;
+} 

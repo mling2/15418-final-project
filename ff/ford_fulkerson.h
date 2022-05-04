@@ -17,7 +17,12 @@ typedef struct edge {
 typedef struct node {
     int ind;
     int numNeighbors;
+    std::vector<int> neighs;
     std::map<int, edge_t> neighbors;
 } node_t;
+
+int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
+
+int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
 
 #endif 

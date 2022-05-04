@@ -1,16 +1,16 @@
-APP_NAMES=ford_fulkerson
+APP_NAMES=ff
 
 OBJS=ford_fulkerson.o
 
-CXX = g++ -std=c++11
-CXXFLAGS = -I. -O3 -Wall
+CXX = g++ -m64 -std=c++11
+CXXFLAGS = -I. -O3 -Wall -fopenmp -Wno-unknown-pragmas
 
 default: $(APP_NAMES)
 
-$(APP_NAMES): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
+$(APP_NAMES): $(OBJS) 
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) main.cpp
 
-%.o: %.cpp
+%.o: %.cpp main.cpp
 	$(CXX) $< $(CXXFLAGS) -c -o $@
 
 clean:
