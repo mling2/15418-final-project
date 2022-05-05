@@ -43,30 +43,37 @@ bool bfs(int *parents, int numNodes, int numEdges, int sourceNode, int sinkNode,
     return false;
 }
 
-bool bfs_omp(int *parents, int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
+bool bfs_omp(int *parents, int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes, int num_of_threads) {
 
     bool visited[numNodes];
-    
     for (int i = 0; i < numNodes; i++) {
         visited[i] = false;
     }
-
     std::queue<int> q;
     q.push(sourceNode);
     visited[sourceNode] = true;
     parents[sourceNode] = -1;
 
+    // omp_lock_t *queue_lock = (omp_lock_t *)calloc(1, sizeof(omp_lock_t));
+    // omp_init_lock(queue_lock);
+
+    omp_set_num_threads(num_of_threads);
+
     while (!q.empty()) {
+        // int q_size = q.size();
+        // #pragma omp parallel for shared(nodes)
+        // for (int i = 0; i < q_size; i++) {
+        //     int currInd = q.front();
+        //     q.pop();
+        //     node_t currNode = nodes[currInd];
+        // }
         int currInd = q.front();
         q.pop();
         node_t currNode = nodes[currInd];
-
-        int num_of_threads = 4;
-        omp_set_num_threads(num_of_threads);
+        
         bool foundSink = false;
-        #pragma omp parallel for default(shared) shared(foundSink) schedule(dynamic)
-        for (int i = omp_get_thread_num(); i < currNode.numNeighbors; i += num_of_threads) {
-            printf("threads: %d\n", omp_get_num_threads());
+        #pragma omp parallel for shared(foundSink, parents, visited, q)
+        for (int i = 0; i < currNode.numNeighbors; i++) {
             int neighborInd = currNode.neighs.at(i);
             edge_t e = currNode.neighbors[neighborInd];
             if (visited[neighborInd] == false && e.capacity > 0) {
@@ -74,12 +81,17 @@ bool bfs_omp(int *parents, int numNodes, int numEdges, int sourceNode, int sinkN
                     parents[sinkNode] = currInd;
                     foundSink = true;
                 }
-                q.push(neighborInd);
+                // omp_set_lock(queue_lock);
+                #pragma omp critical
+                {
+                    q.push(neighborInd);
+                }
+                // omp_unset_lock(queue_lock);
                 parents[neighborInd] = currInd;
                 visited[neighborInd] = true;
             }
+            // printf("thread %d for index %d\n", omp_get_thread_num(), i);
         }
-        
         if (foundSink) return true;
     }
     return false;
@@ -143,7 +155,6 @@ int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) 
     memset(parents, -1, sizeof(parents));
     int flow = 0;
     while (bfs(parents, numNodes, numEdges, sourceNode, sinkNode, nodes)) {
-        printf("found more flow\n");
         int add_flow = get_path_flow(parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
         flow += add_flow;
         mod_residual_graph(add_flow, parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
@@ -152,13 +163,12 @@ int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) 
     return flow;
 } 
 
-int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes) {
+int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes, int num_of_threads) {
     printf("OpenMP ff called\n");
     int parents[numNodes];
     memset(parents, -1, sizeof(parents));
     int flow = 0;
-    while (bfs_omp(parents, numNodes, numEdges, sourceNode, sinkNode, nodes)) {
-        printf("found more flow\n");
+    while (bfs_omp(parents, numNodes, numEdges, sourceNode, sinkNode, nodes, num_of_threads)) {
         int add_flow = get_path_flow(parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
         flow += add_flow;
         mod_residual_graph(add_flow, parents, numNodes, numEdges, sourceNode, sinkNode, nodes);

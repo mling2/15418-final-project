@@ -23,6 +23,6 @@ typedef struct node {
 
 int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
 
-int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
+int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes, int num_of_threads);
 
 #endif 
