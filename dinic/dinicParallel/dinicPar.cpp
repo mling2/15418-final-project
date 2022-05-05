@@ -5,6 +5,12 @@
 #include <chrono>
 #include <omp.h>
 using namespace std;
+using namespace std::chrono;
+typedef std::chrono::high_resolution_clock Clock;
+typedef std::chrono::duration<double> dsec;
+
+int NUM_THREADS = omp_get_max_threads();
+double par_time = 0;
 
 // struct representing an edge from u -> v
 struct edge {
@@ -35,6 +41,7 @@ void createEdge(int u, int v, int cap) {
 *  iterating through them sequentially.
 */
 bool search(int s, int t) {
+    auto par_last = Clock::now();
     #pragma parallel for private(N)
     for (int i = 0; i < N; i++) {
         layer[i] = -1;
@@ -65,6 +72,7 @@ bool search(int s, int t) {
             }
         }
     }
+    par_time += duration_cast<dsec>(Clock::now() - par_last).count();
     return !(layer[t] < 0);
 }
 
@@ -122,7 +130,7 @@ void printAdjList() {
 }
 
 int main(int argc, char *argv[]) {
-    omp_set_num_threads(omp_get_max_threads());
+    omp_set_num_threads(NUM_THREADS);
     char *input_filename = argv[1];
     FILE *input = fopen(input_filename, "r");
     if (!input) {
@@ -143,10 +151,6 @@ int main(int argc, char *argv[]) {
 
     //printAdjList();
 
-    using namespace std::chrono;
-    typedef std::chrono::high_resolution_clock Clock;
-    typedef std::chrono::duration<double> dsec;
-
     auto compute_start = Clock::now();
     double compute_time = 0;
 
@@ -154,7 +158,9 @@ int main(int argc, char *argv[]) {
 
     compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
 
-    cout << "Max flow: " << flow << "\nParallel Dinic time: " << compute_time << "\n";
+    cout << "Num threads: " << NUM_THREADS << "\n";
+    cout << "Max flow: " << flow << "\nTotal Dinic time: " << compute_time << "\n";
+    cout << "Parallel time: " << par_time << "\n";
 
     return 0;
 }
