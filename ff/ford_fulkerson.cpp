@@ -12,6 +12,8 @@
 #include <chrono>
 #include "ford_fulkerson.h"
 #include <math.h> 
+#include <chrono>
+
 using namespace std;
 
 // bool is_done_visiting(bool visited[], int numNodes) {
@@ -252,12 +254,21 @@ int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nod
     int parents[numNodes];
     memset(parents, -1, sizeof(parents));
     int flow = 0;
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::duration<double> dsec;
+
+    auto compute_start = Clock::now();
+    double compute_time = 0;
     while (bfs_omp(parents, numNodes, numEdges, sourceNode, sinkNode, nodes, num_of_threads)) {
+        compute_time += std::chrono::duration_cast<dsec>(Clock::now() - compute_start).count();
         int add_flow = get_path_flow(parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
         flow += add_flow;
         mod_residual_graph(add_flow, parents, numNodes, numEdges, sourceNode, sinkNode, nodes);
         memset(parents, -1, sizeof(parents));
+        compute_start = Clock::now();
     }
+    compute_time += std::chrono::duration_cast<dsec>(Clock::now() - compute_start).count();
+    printf("Parallel Time: %lf.\n", compute_time);
     return flow;
 } 
 
