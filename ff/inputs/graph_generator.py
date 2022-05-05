@@ -32,8 +32,8 @@ def network_flow_generator(minNumNodes, maxNumNodes, minNumEdges, maxNumEdges):
                 if graph[i][j] > 0: 
                     f.write(f'{i} {j} {graph[i][j]}\n')
     
-minNumNodes = 4000
-maxNumNodes = 4000
-minNumEdges = 1000000
-maxNumEdges = 1000000
+minNumNodes = 8000
+maxNumNodes = 8000
+minNumEdges = 50000
+maxNumEdges = 50000
 network_flow_generator(minNumNodes, maxNumNodes, minNumEdges, maxNumEdges)

@@ -25,4 +25,6 @@ int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
 
 int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes, int num_of_threads);
 
+int ff_mpi(int procID, int nproc, int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes, int num_of_threads);
+
 #endif 

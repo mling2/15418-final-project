@@ -2,7 +2,7 @@ APP_NAMES=ff
 
 OBJS=ford_fulkerson.o
 
-CXX = g++ -m64 -std=c++11
+CXX = g++ -std=c++11
 CXXFLAGS = -I. -O3 -Wall -fopenmp -Wno-unknown-pragmas
 
 default: $(APP_NAMES)
