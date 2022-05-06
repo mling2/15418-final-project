@@ -49,108 +49,37 @@ int main(int argc, char *argv[]) {
 
     nodes = (node_t*)calloc(numNodes, sizeof(node_t));
 
-    int res = 0; 
+    int res = 0;
 
-    if (mode == "s") {
-
-        for (int i = 0; i < numNodes; i++) {
-            nodes[i].ind = i;
-            nodes[i].numNeighbors = 0;
-            nodes[i].neighs = std::vector<int>();
-            nodes[i].neighbors = std::map<int, edge_t>();
-        }
-
-        for (int i = 0; i < numEdges; i++) {
-            fscanf(input, "%d %d %d\n", &outNode, &inNode, &capacity);
-            edge_t *newEdge = (edge_t*)calloc(1, sizeof(edge_t));
-            edge_t *twinEdge = (edge_t*)calloc(1, sizeof(edge_t));
-            newEdge->u = &(nodes[outNode]);
-            newEdge->v = &(nodes[inNode]);
-            newEdge->capacity = capacity;
-            newEdge->twin = twinEdge;
-            ((&(nodes[outNode]))->neighbors)[inNode] = *newEdge;
-            ((&(nodes[outNode]))->neighs).push_back(inNode);
-            (&(nodes[outNode]))->numNeighbors++;
-            twinEdge->u = &(nodes[inNode]);
-            twinEdge->v = &(nodes[outNode]);
-            twinEdge->capacity = -1 * capacity;
-            twinEdge->twin = newEdge;
-            ((&(nodes[inNode]))->neighbors)[outNode] = *twinEdge;
-            ((&(nodes[inNode]))->neighs).push_back(outNode);
-            (&(nodes[inNode]))->numNeighbors++;
-        }
-        res = ff(numNodes, numEdges, sourceNode, sinkNode, nodes);
+    for (int i = 0; i < numNodes; i++) {
+        nodes[i].ind = i;
+        nodes[i].numNeighbors = 0;
+        nodes[i].neighs = std::vector<int>();
+        nodes[i].neighbors = std::map<int, edge_t>();
     }
-    else if (mode == "o") {
-        
-        for (int i = 0; i < numNodes; i++) {
-            nodes[i].ind = i;
-            nodes[i].numNeighbors = 0;
-            nodes[i].neighs = std::vector<int>();
-            nodes[i].neighbors = std::map<int, edge_t>();
-        }
 
-        for (int i = 0; i < numEdges; i++) {
-            fscanf(input, "%d %d %d\n", &outNode, &inNode, &capacity);
-            edge_t *newEdge = (edge_t*)calloc(1, sizeof(edge_t));
-            edge_t *twinEdge = (edge_t*)calloc(1, sizeof(edge_t));
-            newEdge->u = &(nodes[outNode]);
-            newEdge->v = &(nodes[inNode]);
-            newEdge->capacity = capacity;
-            newEdge->twin = twinEdge;
-            ((&(nodes[outNode]))->neighbors)[inNode] = *newEdge;
-            ((&(nodes[outNode]))->neighs).push_back(inNode);
-            (&(nodes[outNode]))->numNeighbors++;
+    for (int i = 0; i < numEdges; i++) {
+        fscanf(input, "%d %d %d\n", &outNode, &inNode, &capacity);
+        edge_t *newEdge = (edge_t*)calloc(1, sizeof(edge_t));
+        edge_t *twinEdge = (edge_t*)calloc(1, sizeof(edge_t));
+        newEdge->u = &(nodes[outNode]);
+        newEdge->v = &(nodes[inNode]);
+        newEdge->capacity = capacity;
+        newEdge->twin = twinEdge;
+        ((&(nodes[outNode]))->neighbors)[inNode] = *newEdge;
+        ((&(nodes[outNode]))->neighs).push_back(inNode);
+        (&(nodes[outNode]))->numNeighbors++;
+        twinEdge->u = &(nodes[inNode]);
+        twinEdge->v = &(nodes[outNode]);
+        twinEdge->capacity = -1 * capacity;
+        twinEdge->twin = newEdge;
+        ((&(nodes[inNode]))->neighbors)[outNode] = *twinEdge;
+        ((&(nodes[inNode]))->neighs).push_back(outNode);
+        (&(nodes[inNode]))->numNeighbors++;
+    } 
 
-            twinEdge->u = &(nodes[inNode]);
-            twinEdge->v = &(nodes[outNode]);
-            twinEdge->capacity = -1 * capacity;
-            twinEdge->twin = newEdge;
-            ((&(nodes[inNode]))->neighbors)[outNode] = *twinEdge;
-            ((&(nodes[inNode]))->neighs).push_back(outNode);
-            (&(nodes[inNode]))->numNeighbors++;
-        }
-        res = ff_omp(numNodes, numEdges, sourceNode, sinkNode, nodes, num_of_threads);
-    }
-    else if (mode == "m") {
-        // int procID;
-        // int nproc;
-        // MPI_Init(&argc, &argv);
-        // MPI_Comm_rank(MPI_COMM_WORLD, &procID);
-        // MPI_Comm_size(MPI_COMM_WORLD, &nproc);
-
-        // for (int i = 0; i < numNodes; i++) {
-        //     nodes[i].ind = i;
-        //     nodes[i].numNeighbors = 0;
-        //     nodes[i].neighs = std::vector<int>();
-        //     nodes[i].neighbors = std::map<int, edge_t>();
-        // }
-
-        // for (int i = 0; i < numEdges; i++) {
-        //     fscanf(input, "%d %d %d\n", &outNode, &inNode, &capacity);
-        //     edge_t *newEdge = (edge_t*)calloc(1, sizeof(edge_t));
-        //     edge_t *twinEdge = (edge_t*)calloc(1, sizeof(edge_t));
-        //     newEdge->u = &(nodes[outNode]);
-        //     newEdge->v = &(nodes[inNode]);
-        //     newEdge->capacity = capacity;
-        //     newEdge->twin = twinEdge;
-        //     ((&(nodes[outNode]))->neighbors)[inNode] = *newEdge;
-        //     ((&(nodes[outNode]))->neighs).push_back(inNode);
-        //     (&(nodes[outNode]))->numNeighbors++;
-
-        //     twinEdge->u = &(nodes[inNode]);
-        //     twinEdge->v = &(nodes[outNode]);
-        //     twinEdge->capacity = -1 * capacity;
-        //     twinEdge->twin = newEdge;
-        //     ((&(nodes[inNode]))->neighbors)[outNode] = *twinEdge;
-        //     ((&(nodes[inNode]))->neighs).push_back(outNode);
-        //     (&(nodes[inNode]))->numNeighbors++;
-        // }
-
-        // res = ff_mpi(procID, nproc, numNodes, numEdges, sourceNode, sinkNode, nodes, num_of_threads, argc, argv);
-
-        // MPI_Finalize();
-    }
+    if (mode == "s") res = ff(numNodes, numEdges, sourceNode, sinkNode, nodes);
+    else if (mode == "o") res = ff_omp(numNodes, numEdges, sourceNode, sinkNode, nodes, num_of_threads);
         
     printf("Result: %d\n", res);
 

@@ -12,6 +12,7 @@ typedef struct edge {
     node *u;
     node *v;
     edge *twin;
+    int flow;
 } edge_t;
 
 typedef struct node {
@@ -19,10 +20,10 @@ typedef struct node {
     int numNeighbors;
     std::vector<int> neighs;
     std::map<int, edge_t> neighbors;
+    int height;
+    int excess;
 } node_t;
 
-int ff(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
-
-int ff_omp(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes, int num_of_threads);
-
+int pr(int numNodes, int numEdges, int sourceNode, int sinkNode, node_t *nodes);
+ 
 #endif 
