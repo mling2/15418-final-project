@@ -182,3 +182,8 @@ one, and hypothesize why some may be easier to parallelize than others.
 Although we are behind the original schedule due to schoolwork and Spring Carnival,
 we both expect to be able to devote more time to the project in the coming weeks, 
 and catch up to the Week 3 deliverables by the end of the week. 
+
+
+## Final Report
+
+Our Final Report can be found in the final_report.pdf file. 
